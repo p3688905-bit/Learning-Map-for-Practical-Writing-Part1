@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>應用文學習地圖｜書信・邀請函・自傳 × AI 互動學習</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-tc@5.3.0/chinese-traditional-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-tc@5.3.0/chinese-traditional-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-tc@5.3.0/chinese-traditional-900.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-tc@5.3.0/chinese-traditional-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-tc@5.3.0/chinese-traditional-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-tc@5.3.0/chinese-traditional-700.css">
+<style>
+:root{
+  --bg:#f6f1e5;
+  --paper:#fffdf6;
+  --ink:#2c2a24;
+  --ink-soft:#6b6659;
+  --teal:#17695f;
+  --teal-deep:#0e4f47;
+  --teal-soft:#e3efec;
+  --verm:#c2452d;
+  --verm-soft:#f8e8e2;
+  --gold:#c9962e;
+  --gold-soft:#f7edd6;
+  --line:#e2d9c4;
+  --shadow:0 10px 30px rgba(60,50,20,.10);
+  --serif:'Noto Serif TC',serif;
+  --sans:'Noto Sans TC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(23,105,95,.06), transparent 40%),
+    radial-gradient(circle at 88% 20%, rgba(194,69,45,.05), transparent 40%),
+    radial-gradient(circle at 50% 95%, rgba(201,150,46,.06), transparent 45%),
+    var(--bg);
+  color:var(--ink);
+  line-height:1.75;
+}
+::selection{background:rgba(23,105,95,.2)}
+
+/* ===== scroll progress ===== */
+#scrollBar{position:fixed;top:0;left:0;height:4px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--teal),var(--gold),var(--verm));transition:width .1s linear}
+
+/* ===== nav ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(246,241,229,.88);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:6px}
+.nav-logo{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--teal-deep);margin-right:auto;white-space:nowrap}
+.nav-logo .seal{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;
+  background:var(--verm);color:#fff;font-size:.85rem;margin-right:8px;transform:rotate(-4deg);box-shadow:0 3px 8px rgba(194,69,45,.35)}
+.nav-inner a.navlink{font-size:.88rem;color:var(--ink-soft);text-decoration:none;padding:7px 12px;border-radius:20px;transition:.2s;white-space:nowrap}
+.nav-inner a.navlink:hover{color:var(--teal-deep);background:var(--teal-soft)}
+@media(max-width:760px){.nav-inner a.navlink{padding:7px 8px;font-size:.8rem}.nav-logo span.full{display:none}}
+
+/* ===== hero ===== */
+header{max-width:1100px;margin:0 auto;padding:56px 20px 30px;text-align:center;position:relative}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;letter-spacing:.35em;color:var(--teal);
+  border:1px solid rgba(23,105,95,.3);padding:6px 18px 6px 22px;border-radius:30px;background:rgba(255,253,246,.7);margin-bottom:22px}
+h1.hero-title{font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.3;letter-spacing:.06em}
+h1.hero-title em{font-style:normal;color:var(--verm);position:relative}
+h1.hero-title em::after{content:'';position:absolute;left:0;right:0;bottom:.08em;height:.28em;background:rgba(201,150,46,.3);z-index:-1;border-radius:3px}
+.hero-sub{max-width:640px;margin:16px auto 0;color:var(--ink-soft);font-size:1rem}
+.hero-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:30px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 26px;box-shadow:var(--shadow);min-width:120px}
+.stat b{display:block;font-family:var(--serif);font-size:1.7rem;color:var(--teal-deep);font-weight:900}
+.stat span{font-size:.8rem;color:var(--ink-soft);letter-spacing:.1em}
+.hero-cta{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-weight:700;font-size:.95rem;
+  padding:13px 28px;border-radius:40px;text-decoration:none;border:none;cursor:pointer;transition:.25s}
+.btn-primary{background:linear-gradient(135deg,var(--teal),var(--teal-deep));color:#fff;box-shadow:0 8px 20px rgba(23,105,95,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(23,105,95,.4)}
+.btn-ghost{background:var(--paper);color:var(--verm);border:1.5px solid rgba(194,69,45,.4)}
+.btn-ghost:hover{transform:translateY(-2px);background:var(--verm-soft)}
+.hero-map{margin:36px auto 0;max-width:860px}
+.hero-map svg{width:100%;height:auto;display:block}
+
+/* ===== overall progress ===== */
+.progress-panel{max-width:1100px;margin:10px auto 0;padding:0 20px}
+.progress-card{background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+  padding:24px 30px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.ring-wrap{position:relative;width:96px;height:96px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--gold-soft);stroke-width:9}
+.ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-label b{font-family:var(--serif);font-size:1.35rem;color:var(--teal-deep)}
+.ring-label span{font-size:.62rem;color:var(--ink-soft)}
+.progress-info{flex:1;min-width:220px}
+.progress-info h3{font-family:var(--serif);font-size:1.15rem;margin-bottom:4px}
+.progress-info p{font-size:.86rem;color:var(--ink-soft)}
+.mini-bars{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap}
+.mini-bar{flex:1;min-width:180px}
+.mini-bar .mb-top{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink-soft);margin-bottom:4px}
+.mini-bar .mb-track{height:7px;border-radius:6px;background:var(--gold-soft);overflow:hidden}
+.mini-bar .mb-fill{height:100%;width:0;border-radius:6px;transition:width .8s ease}
+#btnReset{background:none;border:1.5px solid var(--line);color:var(--ink-soft);border-radius:30px;padding:9px 18px;
+  font-size:.82rem;cursor:pointer;transition:.2s;font-family:var(--sans)}
+#btnReset:hover{border-color:var(--verm);color:var(--verm);background:var(--verm-soft)}
+
+/* ===== sections ===== */
+section.route{max-width:1100px;margin:70px auto 0;padding:0 20px}
+.route-head{display:flex;align-items:center;gap:20px;background:var(--paper);border:1px solid var(--line);
+  border-radius:24px;padding:28px 32px;box-shadow:var(--shadow);position:relative;overflow:hidden;flex-wrap:wrap}
+.route-head::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;opacity:.08;background:currentColor}
+.route-badge{width:74px;height:74px;border-radius:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:var(--serif);font-weight:900;font-size:2rem;color:#fff}
+.route-head .rh-text{flex:1;min-width:240px}
+.route-head h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.35rem,3vw,1.7rem);letter-spacing:.04em}
+.route-head p{color:var(--ink-soft);font-size:.9rem;margin-top:4px}
+.route-head .rh-tags{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.rh-tag{font-size:.72rem;padding:3px 12px;border-radius:20px;font-weight:500}
+.route-link{display:inline-flex;align-items:center;gap:8px;font-size:.86rem;font-weight:700;text-decoration:none;
+  padding:11px 22px;border-radius:30px;color:#fff;transition:.25s;white-space:nowrap}
+.route-link:hover{transform:translateY(-2px);filter:brightness(1.1)}
+
+/* letters theme */
+.theme-teal .route-badge{background:linear-gradient(135deg,#1c7a6e,#0e4f47);box-shadow:0 8px 18px rgba(23,105,95,.3)}
+.theme-teal .route-head{color:var(--teal)}
+.theme-teal .route-link{background:linear-gradient(135deg,var(--teal),var(--teal-deep));box-shadow:0 8px 18px rgba(23,105,95,.3)}
+.theme-teal .rh-tag{background:var(--teal-soft);color:var(--teal-deep)}
+/* autobio theme */
+.theme-verm .route-badge{background:linear-gradient(135deg,#d15a3f,#a53423);box-shadow:0 8px 18px rgba(194,69,45,.3)}
+.theme-verm .route-head{color:var(--verm)}
+.theme-verm .route-link{background:linear-gradient(135deg,#c9502f,#a53423);box-shadow:0 8px 18px rgba(194,69,45,.3)}
+.theme-verm .rh-tag{background:var(--verm-soft);color:#93361f}
+
+/* ===== timeline ===== */
+.timeline{margin-top:34px;position:relative;padding-left:8px}
+.timeline::before{content:'';position:absolute;left:31px;top:16px;bottom:16px;width:3px;border-radius:3px;
+  background:repeating-linear-gradient(180deg,var(--line) 0 10px,transparent 10px 18px)}
+.station{display:flex;gap:22px;margin-bottom:26px;position:relative;opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.station.visible{opacity:1;transform:translateY(0)}
+.node{width:48px;height:48px;border-radius:50%;flex-shrink:0;background:var(--paper);border:3px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--ink-soft);
+  position:relative;z-index:2;transition:.3s;box-shadow:0 4px 10px rgba(60,50,20,.1)}
+.station.done .node{border-color:var(--gold);background:linear-gradient(135deg,#e8b84b,#c9962e);color:#fff;box-shadow:0 6px 16px rgba(201,150,46,.45)}
+.card{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px 24px;box-shadow:var(--shadow);
+  cursor:pointer;transition:.25s;position:relative}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(60,50,20,.14)}
+.station.done .card{border-color:rgba(201,150,46,.55);background:linear-gradient(180deg,#fffdf6, #fdf8ec)}
+.card-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-top h3{font-family:var(--serif);font-size:1.12rem;font-weight:700}
+.chip{font-size:.7rem;padding:2px 10px;border-radius:14px;font-weight:700;letter-spacing:.05em}
+.theme-teal .chip{background:var(--teal-soft);color:var(--teal-deep)}
+.theme-verm .chip{background:var(--verm-soft);color:#93361f}
+.chip.done-chip{background:var(--gold-soft);color:#8a6516}
+.card p.summary{font-size:.88rem;color:var(--ink-soft);margin-top:8px}
+.kw-row{margin-top:12px;display:flex;gap:7px;flex-wrap:wrap}
+.kw{font-size:.74rem;padding:3px 11px;border-radius:8px;background:#f3edde;color:#7a6a3f;border:1px solid #e8dfc8}
+.card .go-hint{position:absolute;right:20px;top:22px;font-size:.78rem;color:var(--ink-soft);opacity:0;transition:.25s}
+.card:hover .go-hint{opacity:1;color:var(--teal)}
+@media(max-width:640px){
+  .timeline::before{left:25px}
+  .node{width:38px;height:38px;font-size:.9rem}
+  .station{gap:14px}
+  .card{padding:16px 18px}
+  .card .go-hint{display:none}
+}
+
+/* ===== quiz ===== */
+section#quiz{max-width:1100px;margin:80px auto 0;padding:0 20px}
+.section-title{text-align:center;margin-bottom:10px}
+.section-title .kicker{font-size:.8rem;letter-spacing:.4em;color:var(--gold);font-weight:700}
+.section-title h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.6rem,4vw,2.2rem);margin-top:6px}
+.section-title p{color:var(--ink-soft);font-size:.92rem;margin-top:8px;max-width:560px;margin-left:auto;margin-right:auto}
+.quiz-tabs{display:flex;justify-content:center;gap:12px;margin:26px 0 22px;flex-wrap:wrap}
+.qtab{padding:11px 26px;border-radius:34px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;
+  font-family:var(--sans);font-weight:700;font-size:.9rem;color:var(--ink-soft);transition:.2s}
+.qtab.active[data-route="letters"]{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 6px 16px rgba(23,105,95,.3)}
+.qtab.active[data-route="autobio"]{background:var(--verm);border-color:var(--verm);color:#fff;box-shadow:0 6px 16px rgba(194,69,45,.3)}
+.quiz-board{background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:32px}
+.q-progress{font-size:.8rem;color:var(--ink-soft);text-align:center;margin-bottom:18px;letter-spacing:.1em}
+.q-item{border-bottom:1px dashed var(--line);padding:18px 4px}
+.q-item:last-of-type{border-bottom:none}
+.q-item h4{font-family:var(--serif);font-size:1.02rem;margin-bottom:12px;display:flex;gap:10px}
+.q-item h4 .qnum{color:var(--gold);font-weight:900;flex-shrink:0}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.q-opts{grid-template-columns:1fr}}
+.q-opt{text-align:left;font-family:var(--sans);font-size:.88rem;padding:11px 16px;border-radius:12px;border:1.5px solid var(--line);
+  background:#fffdf6;cursor:pointer;transition:.18s;color:var(--ink);line-height:1.5}
+.q-opt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-soft)}
+.q-opt:disabled{cursor:default}
+.q-opt.correct{border-color:#2e8b57;background:#e5f4ea;color:#1d6440;font-weight:700}
+.q-opt.wrong{border-color:var(--verm);background:var(--verm-soft);color:#93361f}
+.q-exp{margin-top:10px;font-size:.83rem;color:var(--ink-soft);background:var(--gold-soft);border-left:4px solid var(--gold);
+  padding:10px 14px;border-radius:0 10px 10px 0;display:none}
+.q-exp.show{display:block;animation:fadeIn .35s ease}
+.quiz-result{text-align:center;margin-top:22px;padding:20px;border-radius:16px;background:linear-gradient(135deg,var(--teal-soft),var(--gold-soft));display:none}
+.quiz-result.show{display:block;animation:popIn .45s ease}
+.quiz-result b{font-family:var(--serif);font-size:1.6rem;color:var(--teal-deep)}
+.quiz-result p{font-size:.86rem;color:var(--ink-soft);margin-top:4px}
+#btnQuizRetry{margin-top:12px;background:var(--paper);border:1.5px solid var(--teal);color:var(--teal);padding:9px 24px;border-radius:30px;cursor:pointer;font-weight:700;font-family:var(--sans);transition:.2s}
+#btnQuizRetry:hover{background:var(--teal);color:#fff}
+
+/* ===== resources ===== */
+section#resources{max-width:1100px;margin:80px auto 0;padding:0 20px}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:30px}
+@media(max-width:760px){.res-grid{grid-template-columns:1fr}}
+.res-card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:var(--shadow);
+  text-decoration:none;color:var(--ink);display:block;transition:.25s;position:relative;overflow:hidden}
+.res-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(60,50,20,.16)}
+.res-card .res-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.res-card h3{font-family:var(--serif);font-size:1.15rem}
+.res-card p{font-size:.85rem;color:var(--ink-soft);margin-top:6px}
+.res-card .res-url{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:.78rem;font-weight:700;
+  padding:7px 14px;border-radius:20px;word-break:break-all}
+.res-card .corner{position:absolute;top:18px;right:20px;font-size:1.2rem;transition:.25s}
+.res-card:hover .corner{transform:translate(3px,-3px)}
+
+/* ===== modal ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(35,30,18,.55);backdrop-filter:blur(5px);z-index:300;
+  display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex;animation:fadeIn .25s ease}
+.modal{background:var(--paper);border-radius:26px;max-width:640px;width:100%;max-height:86vh;overflow-y:auto;
+  box-shadow:0 30px 80px rgba(0,0,0,.35);animation:popIn .35s ease;position:relative}
+.modal-head{padding:30px 34px 22px;border-bottom:1px dashed var(--line);position:sticky;top:0;background:var(--paper);z-index:2;border-radius:26px 26px 0 0}
+.modal-head .mh-kicker{font-size:.75rem;letter-spacing:.3em;font-weight:700}
+.modal-head h3{font-family:var(--serif);font-weight:900;font-size:1.4rem;margin-top:6px}
+.modal-close{position:absolute;top:20px;right:22px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);
+  background:#fff;cursor:pointer;font-size:1rem;color:var(--ink-soft);transition:.2s;line-height:1}
+.modal-close:hover{background:var(--verm-soft);color:var(--verm);border-color:var(--verm)}
+.modal-body{padding:24px 34px 30px}
+.modal-body h5{font-family:var(--serif);font-size:.95rem;color:var(--gold);letter-spacing:.15em;margin:18px 0 10px}
+.modal-body h5:first-child{margin-top:0}
+.point{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed #eee4cc;font-size:.9rem}
+.point:last-child{border-bottom:none}
+.point .p-ico{flex-shrink:0;width:24px;height:24px;border-radius:8px;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:.75rem}
+.tip-box{margin-top:18px;background:linear-gradient(135deg,var(--teal-soft),var(--gold-soft));border-radius:14px;padding:14px 18px;font-size:.86rem;color:var(--teal-deep)}
+.modal-kw{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.modal-actions{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+.modal-actions .btn{flex:1;justify-content:center;min-width:180px;padding:12px 20px;font-size:.9rem}
+.btn-done{background:var(--gold-soft);color:#8a6516;border:1.5px solid var(--gold)}
+.btn-done.is-done{background:linear-gradient(135deg,#e8b84b,#c9962e);color:#fff;border-color:transparent}
+.modal-nav{display:flex;justify-content:space-between;margin-top:18px}
+.modal-nav button{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:.84rem;font-family:var(--sans);padding:6px 10px;border-radius:10px;transition:.2s}
+.modal-nav button:hover{color:var(--teal);background:var(--teal-soft)}
+.modal-nav button:disabled{opacity:.3;cursor:default}
+
+/* ===== toast ===== */
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(120px);z-index:400;
+  background:var(--ink);color:#f7f2e7;padding:14px 28px;border-radius:40px;font-size:.9rem;font-weight:500;
+  box-shadow:0 14px 34px rgba(0,0,0,.3);transition:transform .45s cubic-bezier(.2,1.4,.4,1);white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== footer ===== */
+footer{margin-top:90px;padding:40px 20px 50px;text-align:center;border-top:1px solid var(--line);background:rgba(255,253,246,.6)}
+footer .f-seal{font-family:var(--serif);font-weight:900;color:var(--verm);font-size:1.05rem;letter-spacing:.2em}
+footer p{font-size:.8rem;color:var(--ink-soft);margin-top:8px}
+footer a{color:var(--teal);text-decoration:none}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.92) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes dashmove{to{stroke-dashoffset:-24}}
+.dash-anim{stroke-dasharray:6 6;animation:dashmove 1.6s linear infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.floaty{animation:floaty 4s ease-in-out infinite}
+.floaty2{animation:floaty 5s ease-in-out infinite .8s}
+</style>
+</head>
+<body>
+
+<div id="scrollBar"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo"><span class="seal">文</span><span class="full">應用文學習地圖</span></div>
+    <a class="navlink" href="#route-letters">✉️ 書信之路</a>
+    <a class="navlink" href="#route-autobio">📖 自傳之路</a>
+    <a class="navlink" href="#quiz">🎯 測驗站</a>
+    <a class="navlink" href="#resources">🔗 原站資源</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-kicker">大一國文 ・ 應用文 × AI 寫作</div>
+  <h1 class="hero-title">應用文<em>學習地圖</em></h1>
+  <p class="hero-sub">整合《書信、邀請函與 AI 應用》與《自傳寫作實驗室》兩大教材——
+    沿著地圖走過 12 個學習站，從傳統書信禮儀到 AI 共寫實戰，一步一步解鎖你的應用文之力。</p>
+
+  <div class="hero-map">
+    <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="學習地圖插畫">
+      <!-- parchment -->
+      <rect x="20" y="20" width="820" height="170" rx="24" fill="#fffdf6" stroke="#e2d9c4" stroke-width="2"/>
+      <rect x="32" y="32" width="796" height="146" rx="16" fill="none" stroke="#eee4cc" stroke-width="1.5" stroke-dasharray="2 5"/>
+      <!-- winding path -->
+      <path d="M 70 150 C 160 150 150 60 240 60 C 330 60 320 150 410 150 C 500 150 490 60 580 60 C 670 60 660 150 760 150"
+            fill="none" stroke="#c9962e" stroke-width="4" stroke-linecap="round" class="dash-anim" opacity=".8"/>
+      <!-- nodes -->
+      <g>
+        <circle cx="70" cy="150" r="13" fill="#17695f"/><text x="70" y="155" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">起</text>
+        <circle cx="240" cy="60" r="13" fill="#17695f"/><text x="240" y="65" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">信</text>
+        <circle cx="410" cy="150" r="13" fill="#c2452d"/><text x="410" y="155" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">邀</text>
+        <circle cx="580" cy="60" r="13" fill="#c2452d"/><text x="580" y="65" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">傳</text>
+        <circle cx="760" cy="150" r="14" fill="#c9962e"/><text x="760" y="155" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">成</text>
+      </g>
+      <!-- envelope -->
+      <g class="floaty" transform="translate(150,80)">
+        <rect x="0" y="0" width="46" height="32" rx="5" fill="#f8e8e2" stroke="#c2452d" stroke-width="2"/>
+        <path d="M0 4 L23 20 L46 4" fill="none" stroke="#c2452d" stroke-width="2"/>
+        <circle cx="23" cy="24" r="5" fill="#c2452d" opacity=".85"/>
+      </g>
+      <!-- book -->
+      <g class="floaty2" transform="translate(330,72)">
+        <path d="M0 6 Q14 0 26 6 L26 34 Q14 28 0 34 Z" fill="#e3efec" stroke="#17695f" stroke-width="2"/>
+        <path d="M52 6 Q38 0 26 6 L26 34 Q38 28 52 34 Z" fill="#e3efec" stroke="#17695f" stroke-width="2"/>
+      </g>
+      <!-- robot -->
+      <g class="floaty" transform="translate(640,92)">
+        <rect x="6" y="10" width="34" height="26" rx="8" fill="#f7edd6" stroke="#c9962e" stroke-width="2"/>
+        <circle cx="17" cy="22" r="3" fill="#17695f"/><circle cx="29" cy="22" r="3" fill="#17695f"/>
+        <path d="M17 30 Q23 34 29 30" fill="none" stroke="#c2452d" stroke-width="2" stroke-linecap="round"/>
+        <line x1="23" y1="10" x2="23" y2="3" stroke="#c9962e" stroke-width="2"/>
+        <circle cx="23" cy="2" r="2.5" fill="#c2452d"/>
+      </g>
+      <!-- sparkles -->
+      <text x="500" y="66" font-size="16" fill="#c9962e">✦</text>
+      <text x="120" y="60" font-size="12" fill="#17695f" opacity=".7">✦</text>
+      <text x="700" y="70" font-size="14" fill="#c2452d" opacity=".7">✦</text>
+      <!-- flag -->
+      <g transform="translate(752,104)"><line x1="0" y1="0" x2="0" y2="30" stroke="#8a6516" stroke-width="2.5"/>
+      <path d="M0 0 L22 7 L0 15 Z" fill="#c2452d"/></g>
+    </svg>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><b>2</b><span>大學習路線</span></div>
+    <div class="stat"><b>12</b><span>個學習站</span></div>
+    <div class="stat"><b>10</b><span>道測驗題</span></div>
+    <div class="stat"><b>2</b><span>個原站資源</span></div>
+  </div>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="#route-letters">🧭 開始探索地圖</a>
+    <a class="btn btn-ghost" href="#quiz">🎯 直接挑戰測驗</a>
+  </div>
+</header>
+
+<div class="progress-panel">
+  <div class="progress-card">
+    <div class="ring-wrap">
+      <svg width="96" height="96" viewBox="0 0 96 96">
+        <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#17695f"/><stop offset="100%" stop-color="#c9962e"/>
+        </linearGradient></defs>
+        <circle class="ring-bg" cx="48" cy="48" r="40"/>
+        <circle class="ring-fg" id="ringFg" cx="48" cy="48" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+      </svg>
+      <div class="ring-label"><b id="ringPct">0%</b><span>總進度</span></div>
+    </div>
+    <div class="progress-info">
+      <h3>🏮 我的學習旅程</h3>
+      <p>點選學習站查看重點整理，讀完後標記完成。進度會自動儲存在你的瀏覽器中。</p>
+      <div class="mini-bars">
+        <div class="mini-bar">
+          <div class="mb-top"><span>✉️ 書信・邀請函之路</span><span id="pctLetters">0/6</span></div>
+          <div class="mb-track"><div class="mb-fill" id="barLetters" style="background:linear-gradient(90deg,#1c7a6e,#0e4f47)"></div></div>
+        </div>
+        <div class="mini-bar">
+          <div class="mb-top"><span>📖 自傳寫作之路</span><span id="pctAutobio">0/6</span></div>
+          <div class="mb-track"><div class="mb-fill" id="barAutobio" style="background:linear-gradient(90deg,#d15a3f,#a53423)"></div></div>
+        </div>
+      </div>
+    </div>
+    <button id="btnReset" title="清除所有學習進度">🗑 重設進度</button>
+  </div>
+</div>
+
+<section class="route theme-teal" id="route-letters">
+  <div class="route-head">
+    <div class="route-badge">信</div>
+    <div class="rh-text">
+      <h2>路線一｜書信、邀請函與 AI 應用</h2>
+      <p>從傳統書信禮儀，到生成式 AI 寫作的完整旅程——六大學習站。</p>
+      <div class="rh-tags">
+        <span class="rh-tag">應用文 21 類</span><span class="rh-tag">箋文 13 項</span>
+        <span class="rh-tag">邀請函 6 結構</span><span class="rh-tag">AI 寫作 4 步驟</span>
+      </div>
+    </div>
+    <a class="route-link" href="https://p3688905-bit.github.io/Letters-invitations-and-AI-applications/" target="_blank" rel="noopener">進入原站學習 ↗</a>
+  </div>
+  <div class="timeline" id="tl-letters"></div>
+</section>
+
+<section class="route theme-verm" id="route-autobio">
+  <div class="route-head">
+    <div class="route-badge">傳</div>
+    <div class="rh-text">
+      <h2>路線二｜自傳寫作實驗室</h2>
+      <p>文學篇・實戰篇・求職篇——用 AI 當副駕駛，寫出有溫度的自我故事。</p>
+      <div class="rh-tags">
+        <span class="rh-tag">自我建構</span><span class="rh-tag">Prompt 心法</span>
+        <span class="rh-tag">六段架構</span><span class="rh-tag">AI 倫理</span>
+      </div>
+    </div>
+    <a class="route-link" href="https://p3688905-bit.github.io/Autobiography-Writing-Lab/" target="_blank" rel="noopener">進入原站學習 ↗</a>
+  </div>
+  <div class="timeline" id="tl-autobio"></div>
+</section>
+
+<section id="quiz">
+  <div class="section-title">
+    <div class="kicker">CHECKPOINT</div>
+    <h2>🎯 測驗站｜檢核你的學習成果</h2>
+    <p>每條路線各有五道題目，點選選項即刻判定並顯示解析。全對即可稱霸應用文之地圖！</p>
+  </div>
+  <div class="quiz-tabs">
+    <button class="qtab active" data-route="letters">✉️ 書信・邀請函測驗</button>
+    <button class="qtab" data-route="autobio">📖 自傳寫作測驗</button>
+  </div>
+  <div class="quiz-board">
+    <div class="q-progress" id="qProgress"></div>
+    <div id="qList"></div>
+    <div class="quiz-result" id="qResult">
+      <b id="qScore"></b>
+      <p id="qScoreMsg"></p>
+      <button id="btnQuizRetry">🔄 重新挑戰</button>
+    </div>
+  </div>
+</section>
+
+<section id="resources">
+  <div class="section-title">
+    <div class="kicker">RESOURCES</div>
+    <h2>🔗 原站資源｜深入學習入口</h2>
+    <p>本地圖整理自以下兩個互動式教材網站，含完整工作坊、工作紙與匯出功能，建議前往原站實作。</p>
+  </div>
+  <div class="res-grid">
+    <a class="res-card" href="https://p3688905-bit.github.io/Letters-invitations-and-AI-applications/" target="_blank" rel="noopener">
+      <span class="corner">↗</span>
+      <div class="res-icon" style="background:var(--teal-soft)">
+        <svg width="30" height="30" viewBox="0 0 46 32"><rect x="1" y="1" width="44" height="30" rx="5" fill="#fff" stroke="#17695f" stroke-width="2.5"/><path d="M1 5 L23 20 L45 5" fill="none" stroke="#17695f" stroke-width="2.5"/><circle cx="23" cy="24" r="4.5" fill="#c2452d"/></svg>
+      </div>
+      <h3>書信、邀請函與 AI 應用</h3>
+      <p>傳統書信與應用文基礎、箋文十三項結構、稱謂・提稱語・問候語速查、AI 時代邀請函四步驟，以及可匯出 Word 的六步驟實戰工作坊。</p>
+      <span class="res-url" style="background:var(--teal-soft);color:var(--teal-deep)">p3688905-bit.github.io/Letters-invitations-and-AI-applications</span>
+    </a>
+    <a class="res-card" href="https://p3688905-bit.github.io/Autobiography-Writing-Lab/" target="_blank" rel="noopener">
+      <span class="corner">↗</span>
+      <div class="res-icon" style="background:var(--verm-soft)">
+        <svg width="30" height="30" viewBox="0 0 52 36"><path d="M1 6 Q14 0 26 6 L26 34 Q14 28 1 34 Z" fill="#fff" stroke="#c2452d" stroke-width="2.5"/><path d="M51 6 Q38 0 26 6 L26 34 Q38 28 51 34 Z" fill="#fff" stroke="#c2452d" stroke-width="2.5"/></svg>
+      </div>
+      <h3>自傳寫作實驗室</h3>
+      <p>文學篇（理解自傳）、實戰篇（AI 共寫與提示詞產生器）、求職篇（六段架構與 AI 賦能四步驟），含自動儲存的互動工作紙與作業下載。</p>
+      <span class="res-url" style="background:var(--verm-soft);color:#93361f">p3688905-bit.github.io/Autobiography-Writing-Lab</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="f-seal">✒️ 以文會友 ・ 學無止境</div>
+  <p>應用文學習地圖｜教材內容整理自：
+    <a href="https://p3688905-bit.github.io/Letters-invitations-and-AI-applications/" target="_blank" rel="noopener">書信、邀請函與 AI 應用</a> ・
+    <a href="https://p3688905-bit.github.io/Autobiography-Writing-Lab/" target="_blank" rel="noopener">自傳寫作實驗室</a>
+  </p>
+  <p style="margin-top:4px">AI 輔助創作，人來掌握品質 —— 方向盤始終在你手中。</p>
+</footer>
+
+<!-- modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div class="mh-kicker" id="mKicker"></div>
+      <h3 id="mTitle"></h3>
+      <button class="modal-close" id="btnModalClose" aria-label="關閉">✕</button>
+    </div>
+    <div class="modal-body">
+      <h5>▸ 學習重點</h5>
+      <div id="mPoints"></div>
+      <h5>▸ 關鍵詞</h5>
+      <div class="modal-kw" id="mKw"></div>
+      <div class="tip-box" id="mTip"></div>
+      <div class="modal-actions">
+        <button class="btn btn-done" id="btnMark">✅ 標記為已完成</button>
+        <a class="btn btn-primary" id="mLink" href="#" target="_blank" rel="noopener">📖 前往原站學習此章 ↗</a>
+      </div>
+      <div class="modal-nav">
+        <button id="btnPrev">← 上一站</button>
+        <button id="btnNext">下一站 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================= data ================= */
+const ROUTES = [
+{
+  id:'letters', theme:'theme-teal', label:'書信・邀請函之路',
+  url:'https://p3688905-bit.github.io/Letters-invitations-and-AI-applications/',
+  stations:[
+    {id:'L1',num:'①',tag:'起步站',title:'課程總覽與學習路徑',
+     summary:'認識三大學習模組與「閱讀知識→演練測驗→AI 實作→匯出上傳」四步學習路徑。',
+     kws:['21 種應用文','13 項箋文','6 結構邀請函','4 步驟 AI 寫作'],
+     points:['三大模組：傳統書信與應用文基礎、書信結構與常見術語、AI 時代的邀請函寫作。',
+             '四步學習路徑：壹 閱讀知識 → 貳 演練測驗 → 參 AI 實作 → 肆 匯出上傳。',
+             '目標①：掌握傳統書信的格式、稱謂與禮儀用語，避免失禮錯誤。',
+             '目標②：熟記邀請函六大結構，清楚呈現時間、地點與 RSVP 資訊。',
+             '目標③：學會以 STAR 原則撰寫提示語，運用 AI 提升效率並進行人工審核。'],
+     tip:'💡 本頁面整合兩份教材：《課程總覽（學習指引）》與《邀請函寫作與 AI 輔助工作坊》，工作坊成果可匯出 Word 檔上傳作業區。'},
+    {id:'L2',num:'②',tag:'基礎站',title:'傳統書信與應用文基礎',
+     summary:'書信的三大特性、種類分法、寫作原則，以及應用文的定義、四特質與 21 種常見種類。',
+     kws:['對象・範圍・格式','上行/平行/下行','應用文四特質','六原則'],
+     points:['書信三大特性：有一定的對象（重禮節）、一定的範圍（簡明扼要）、一定的格式（專門用語）。',
+             '依「人」而分：上行（長輩/上司，最恭敬）、平行（平輩，禮貌自然）、下行（晚輩，懇切叮嚀）。',
+             '依「事」而分：應酬、應用、議論、聯絡四類。',
+             '寫作原則：弄清「對象是誰？談些什麼？」——這也是 AI 提示詞必須交代的兩件事。',
+             '應用文四特質：內容取材日常、對象特定有時效、格式約定俗成、術語需謹慎使用；共 21 種常見種類。'],
+     tip:'💡 應用文是「針對特定事件、特定目的而寫作，具有特定格式的文章」，涵蓋個人、機關團體之間的文書往來。'},
+    {id:'L3',num:'③',tag:'骨架站',title:'書信結構與常見術語',
+     summary:'封文（信封）與箋文（信紙）的寫法：前中後三段共 13 項結構，加上稱謂・提稱語・問候語速查。',
+     kws:['封文/箋文','提稱語','末啟詞','家大舍小令外人'],
+     points:['箋文 13 項：稱謂、提稱語、啟事敬辭、開頭應酬語、正文、結尾應酬語、結尾敬辭、自稱署名末啟詞、寫信時間、並候語、附件語、附候語、補述語。',
+             '必要項目：稱謂、提稱語、正文、結尾敬辭、署名日期；其餘（啟事敬辭、並候語等）可視需要省略。',
+             '提稱語速查：祖父母父母「膝下」、師長「函丈/道鑒」、平輩「臺鑒/足下」、晚輩「青鑒/如晤」、政界「鈞鑒/勛鑒」。',
+             '問候語速查：師長「敬請 道安」、父母「敬請 福安」、平輩「順頌 時祺」、商界「敬請 籌安」、探病「恭請 痊安」。',
+             '信封啟封詞：宜用「大啟、鈞啟、台啟、道啟」，絕對不可使用「恭啟、敬啟」！'],
+     tip:'💡 口訣「家大舍小令外人」：稱自己家人用「家／舍」，稱對方家人用「令／尊」。原站附有完整 13 項標註範例與禮節快查器。'},
+    {id:'L4',num:'④',tag:'AI 站',title:'AI 時代的邀請函寫作',
+     summary:'邀請函的定義與結構、七大關鍵元素、AI 四大應用情境、風險警示與 STAR 提示語四步驟。',
+     kws:['STAR 提示語','七關鍵元素','RSVP','人工審核第一防線'],
+     points:['邀請函四大結構：標題、稱謂、正文（時間地點為必須要素）、落款。',
+             '七大關鍵元素：受邀人稱謂、活動名稱與目的、日期時間地點、亮點議程、主辦方資訊、RSVP 方式與期限、個性化開場結尾。',
+             'STAR 提示語：Style 風格、Task 任務、Audience 對象、Requirements 要求——越具體，AI 產出越精準。',
+             'AI 四大應用：內容生成與梳理、風格語氣調整、格式檢查糾錯、多語言版本轉換，另可設計個性化開場（Hook）與行動呼籲（CTA）。',
+             '四大風險：傳統格式/術語錯誤（極高）、活動資訊錯誤矛盾（中）、缺乏人情味制式化（中）、過度修飾重點模糊（一般）。'],
+     tip:'🔑 核心精神：「AI 輔助創作，人來掌握品質。」所有 AI 生成的邀請函，必須人工再次審核姓名、時間地點與敬語格式。'},
+    {id:'L5',num:'⑤',tag:'實作站',title:'實戰工作坊（六步驟）',
+     summary:'從基本框架到自我評估的六步驟工作坊，支援模擬 AI 生成、圖檔上傳與 Word 匯出。',
+     kws:['基本框架','AI 生成與修正','個性化語句','綜合邀請函'],
+     points:['步驟一 基本框架：設定活動名稱、時間、地點、受邀對象與語氣，理解六大結構的核心內容。',
+             '步驟二 AI 生成與修正：用 STAR 撰寫提示語，取得框架後帶入修正區優化。',
+             '步驟三 個性化語句：展現而非告知（Show, Don\u2019t Tell），具體提到受邀者的研究/貢獻與活動的連結。',
+             '步驟四 創意開場與結束語：開場 Hook 抓住目光，結尾 CTA 提高回覆率（含 RSVP 期限）。',
+             '步驟五 綜合撰寫：自動匯入草稿、信紙預覽、上傳最多 4 張 AI 生成圖檔並加圖說。',
+             '步驟六 自我評估：為 AI 幫助程度評分（1–5 星），反思幫助、改進與未來應用。'],
+     tip:'📤 完成後點擊右上角「匯出 Word 檔」，學習紀錄（含圖檔）一併下載，再上傳至課業輔導系統作業區。'},
+    {id:'L6',num:'⑥',tag:'終點站',title:'作業說明與自我檢查',
+     summary:'邀請函寫作任務四部曲：完成工作坊 → 上傳 AI 圖檔（選做加分）→ 匯出 Word → 上傳作業區。',
+     kws:['8 項檢查清單','Word 匯出','作業區上傳','人工校對'],
+     points:['壹 依序完成工作坊六步驟，擬寫一篇完整的邀請函（可配合生成式 AI 輔助創作）。',
+             '貳 選做加分：在步驟五上傳以 AI 製作的邀請函設計圖檔（最多 4 張），將嵌入 Word 檔。',
+             '參 點擊「📤 匯出 Word 檔」下載完整工作坊內容（草稿、反思與圖檔）。',
+             '肆 將 Word 檔上傳至課業輔導系統作業區；教材區與作業區另有範本可參考。',
+             '繳交前自我檢查清單共 8 項：六步驟完成、敬語正確（未誤用恭啟/敬啟）、時間地點 RSVP 明確、已人工審核、圖檔與圖說、匯出成功、開啟確認、已上傳。'],
+     tip:'💡 上傳前請再次確認受邀人姓名、時間、地點與敬語格式是否正確無誤——禮儀細節就是分數所在。'}
+  ]
+},
+{
+  id:'autobio', theme:'theme-verm', label:'自傳寫作之路',
+  url:'https://p3688905-bit.github.io/Autobiography-Writing-Lab/',
+  stations:[
+    {id:'A1',num:'壹',tag:'文學篇',title:'自傳寫作的意義與特點',
+     summary:'自傳不只是記錄，更是與自己的深度對話——理解自我建構、破解三大迷思、分辨流水帳與文學自傳。',
+     kws:['自我建構','觀點與主題','平凡更動人','主題曲'],
+     points:['三大價值：梳理人生脈絡（找出生命主題曲）、自我療癒與對話、連結他人（個人故事引起普世共鳴）。',
+             '迷思破解①：不必有名人成就——平凡更動人，微小日常細節最觸動人心。',
+             '迷思破解②：不是按年份的流水帳——好的自傳有「觀點」與「主題」，重點是事件對你的意義。',
+             '迷思破解③：AI 是鏡子不是槍手——需要你餵養真實記憶，產出需逐字核對潤飾。',
+             '流水帳 vs 文學自傳：精選事件重意義、現在的我與過去對話、具體感官細節、主題式編排、結尾留餘韻。',
+             '動筆三問：哪三個時刻定義了我？想讓讀者認識什麼樣的我？貫穿全文的一個詞是什麼？'],
+     tip:'🧵 主題式連貫技巧：讓所有段落圍繞同一核心特質（如「堅持」），主線清晰，成長弧線自然浮現。'},
+    {id:'A2',num:'貳',tag:'思辨篇',title:'文學與科技的交會',
+     summary:'當演算法遇上記憶：賽博格書寫、數位記憶重構與情感溫度——釐清 AI 與人的分工界線。',
+     kws:['Cyborg Writing','數位記憶','AI 幻覺','副駕駛'],
+     points:['賽博格書寫（Donna Haraway）：AI 成為大腦的延伸——AI 提供詞彙庫，人類提供靈魂與篩選標準。',
+             '數位記憶的重構：AI 可喚醒被遺忘的時代細節，但也可能製造「幻覺」——辨真成為新時代作者的責任。',
+             '情感溫度的保留：AI 擅長模仿風格，無法真正體驗痛苦喜悅——科技負責修辭，人類負責真誠。',
+             'AI 擅長：詞彙聯想、整理素材、模仿文體、背景參考、當永不疲倦的訪談者。',
+             '只有你能：判斷真偽、提供情感、做出取捨、賦予意義、按下送出鍵並為文字負責。'],
+     tip:'🚗 AI 是你的副駕駛，方向盤始終在你手中——它會看地圖報路況，但要去哪裡，永遠由你決定。'},
+    {id:'A3',num:'參',tag:'實戰篇',title:'AI 在自傳寫作中的應用',
+     summary:'AI 的三大角色（採訪者・結構師・潤稿人）、提示詞四大心法與萬用公式，以及即時試驗工作坊。',
+     kws:['採訪者/結構師/潤稿人','角色＋背景＋任務＋格式＋風格','迭代追問','Before/After'],
+     points:['角色一 採訪者：請 AI 向你提問，用問題釣出沉睡的細節（「那次比賽前夜，你做了什麼？」）。',
+             '角色二 結構師：把散亂素材交給 AI，請它提出分段與小標題建議，找出故事主線。',
+             '角色三 潤稿人：把寫好的句子交給 AI 潤色，再比對原意，留下更像「你」的版本。',
+             '提示詞萬用公式：角色＋背景＋任務＋格式＋風格；四大心法：具體明確、賦予角色、提供範例、迭代追問。',
+             '原站內建「AI 自傳提示詞產生器」與「記憶片段微型工作坊」，可即時試驗模擬 AI 編輯建議。'],
+     tip:'✨ 優化三件套：感官描寫＋具象化比喻＋情感深化——把「很開心」升級成「掌聲如潮水般湧來」。'},
+    {id:'A4',num:'肆',tag:'工作紙',title:'課堂練習流程：從概念到實作',
+     summary:'四階段練習＋一張自動儲存的互動工作紙，完成最終作業可一鍵下載 Word 檔繳交。',
+     kws:['記憶喚醒','AI 訪談','初稿生成','人工潤飾'],
+     points:['四階段：① 記憶喚醒（列 3 個關鍵時刻/物品）→ ② AI 訪談（回答深度問題挖掘細節）→ ③ 初稿生成（整理成結構完整草稿）→ ④ 人工潤飾（加入情感溫度、逐字確認真實性）。',
+             '互動工作紙五大活動：熱身探索、AI 生成自傳框架（童年/青年/現在）、探索細節與情感、試寫片段（至少 5 句）、語句潤色練習。',
+             '所有內容自動儲存於瀏覽器（localStorage），關閉頁面也不會消失。',
+             '最終作業：完成不少於 300 字的自傳初稿，與工作紙、課堂反思合併下載 Word 檔。'],
+     tip:'✅ 繳交前自我檢查：有細節與情感、像我的聲音、已用 AI 潤色、已逐字核對事實。'},
+    {id:'A5',num:'伍',tag:'求職篇',title:'求職自傳與履歷：傳統心法 × AI 賦能',
+     summary:'自傳不是回憶錄，而是精準的自我行銷提案——六段架構心法、❌⭕實戰對照與 AI 賦能四步驟。',
+     kws:['六段架構','500–1200 字','想貢獻不是想獲得','STAR 履歷','AI 面試官找碴'],
+     points:['核心問題：「為什麼我是這份工作最適合的人選？」以應徵職缺為重心，強調與他人不同的特色。',
+             '求學 vs 求職：教授看「動機與學術潛力」；人資看「人格特質與實務學經歷」。心態要從「想獲得」轉為「想貢獻」。',
+             '六段架構：①個人資料與特質 ②學業與特殊表現 ③工作經驗 ④社團與成長 ⑤證照與專長 ⑥報考理由與抱負；字數建議 500～1200 字。',
+             '新鮮人三招：挖掘經歷（社團/專題/打工）、展現軟實力（解決問題/溝通協作/抗壓性）、連結職缺（細讀 JD）。',
+             'AI 賦能四步驟：準備餵養資料 → 生成基礎履歷 → 角色扮演優化 → AI 面試官找碴（逆向工程，先批評再修正）。',
+             '倫理四注意：AI 幻覺務必逐字檢查、個資先去識別化、避免「AI 味」加入個人細節、AI 是編輯顧問不是槍手。'],
+     tip:'💡 一行秘訣：每個故事都要問「所以呢？」——挫折→調整→成果的弧線，比職稱本身動人十倍；可以藏拙，但千萬不能造假。'},
+    {id:'A6',num:'陸',tag:'終點站',title:'課堂反思與最終作業',
+     summary:'寫作的終點不是交稿，而是理解自己如何使用工具——三大反思提問＋自傳初稿（≥300 字）。',
+     kws:['這是誰的故事','情感失真','作者的責任','Keep Real'],
+     points:['反思一：這是我的故事，還是 AI 的故事？文字被大幅修飾後是否仍保有真實性？',
+             '反思二：情感是否失真？AI 生成的華麗詞藻，能否精確表達你當時細膩的情感？',
+             '反思三：作者的責任——你刪改了什麼？保留了什麼？這些選擇代表了什麼？',
+             '課堂反思：AI 在哪個環節幫助最大（框架設計/細節挖掘/語句潤色）？如何影響創作？如何平衡 AI 與個人創作？',
+             '最終作業：根據練習完成不少於 300 字的自傳初稿，利用 AI 潤色調整後一鍵下載 Word 檔繳交。',
+             '原站 FAQ 補充：AI 抄襲界線、提示詞詳細度、幻覺處理、隱私去識別化、交稿四關口訣（真實・聲音・細節・校對）。'],
+     tip:'🧭 結語：工具是死的，人是活的。AI 提供華麗詞藻與工整結構，但只有你能賦予文字真正的溫度與靈魂。Keep Writing, Keep Real. ✒️'}
+  ]
+}
+];
+
+const QUIZZES = {
+letters:[
+ {q:'信封上的「啟封詞」可以使用「敬啟」嗎？',opts:['可以，表示尊敬','不可以，絕對不可使用「恭啟」「敬啟」','只能用於長輩','只能用於公文'],ans:1,
+  exp:'✅ 信封絕對不可使用「恭啟」「敬啟」，宜用「大啟」「鈞啟」「台啟」「道啟」等。'},
+ {q:'寫信給師長，提稱語宜用？',opts:['膝下','青鑒','函丈、壇席、講座','左右'],ans:2,
+  exp:'✅ 「函丈、壇席、講座」用於師長；「膝下」用於祖父母父母，「青鑒」用於晚輩，「左右」用於平輩。'},
+ {q:'邀請函正文中，哪一項是「必須要素」？',opts:['活動預算','著裝規定','時間、地點','媒體聯絡人'],ans:2,
+  exp:'✅ 邀請函正文須含活動內容，其中「時間、地點」為必須要素。'},
+ {q:'關於 AI 生成的邀請函，最正確的做法是？',opts:['直接寄出，AI 不會出錯','必須人工再次審核後再寄出','只要加上表情符號即可','完全不用檢查格式'],ans:1,
+  exp:'✅ 【第一防線】最終人工作業與校對：特別檢查受邀人姓名、時間地點與傳統敬語格式。'},
+ {q:'STAR 提示語原則中，「R」代表什麼？',opts:['Role 角色','Reply 回覆','Requirements 具體要求','Read 閱讀'],ans:2,
+  exp:'✅ STAR＝Style 風格、Task 任務、Audience 對象、Requirements 具體要求（主題、字數限制等）。'}
+],
+autobio:[
+ {q:'求職自傳的核心觀念是？',opts:['一部完整的個人回憶錄','一份精準的自我行銷提案','家族歷史的長篇記錄','按年份排列的流水帳'],ans:1,
+  exp:'✅ 自傳不是回憶錄，而是回答「為什麼我是這份工作最適合的人選？」的自我行銷提案。'},
+ {q:'求職自傳的建議字數為？',opts:['300 字以內','500～1200 字','2000 字以上','越長越好'],ans:1,
+  exp:'✅ 字數建議 500～1200 字（原則上不超過 1200 字），分段敘述並設立標題。'},
+ {q:'提示詞的萬用公式是？',opts:['角色＋背景＋任務＋格式＋風格','時間＋地點＋人物＋事件','起承轉合','主題＋大綱＋結論'],ans:0,
+  exp:'✅ 角色＋背景＋任務＋格式＋風格——提示詞越具體，AI 越貼近你的需求。'},
+ {q:'AI 捏造了你沒有的經歷或獎項，這種現象稱為？',opts:['迭代（Iteration）','幻覺（Hallucination）','潤飾（Polishing）','賽博格（Cyborg）'],ans:1,
+  exp:'✅ 這是「幻覺」。務必逐字檢查，確保每個經歷都真實發生過——面試被問到答不出來會直接出局。'},
+ {q:'下列何者最能體現「文學自傳」而非「流水帳」？',opts:['一年一段、按時間條列所有事件','結尾寫「以上就是我的自傳」','以「主題」串連精選事件，著重意義與感官細節','多用「很開心、很感動」等抽象形容'],ans:2,
+  exp:'✅ 文學自傳精選事件、有觀點有主題，用具體感官細節與成長弧線打動讀者；平凡，往往更動人。'}
+]
+};
+
+/* ================= state ================= */
+const LS_KEY='appliedWritingMapV1';
+let doneSet=new Set();
+try{const saved=JSON.parse(localStorage.getItem(LS_KEY)||'[]');saved.forEach(x=>doneSet.add(x));}catch(e){}
+let flatStations=[];
+ROUTES.forEach(r=>r.stations.forEach((s,i)=>{s.route=r.id;s.index=i;flatStations.push(s);}));
+let currentStation=null;
+
+/* ================= render timeline ================= */
+function renderRoutes(){
+  ROUTES.forEach(route=>{
+    const tl=document.getElementById('tl-'+route.id);
+    tl.innerHTML=route.stations.map(s=>`
+      <div class="station" data-sid="${s.id}">
+        <div class="node">${s.num}</div>
+        <div class="card" data-sid="${s.id}" tabindex="0" role="button" aria-label="查看 ${s.title} 詳情">
+          <span class="go-hint">查看詳情 →</span>
+          <div class="card-top">
+            <h3>${s.title}</h3>
+            <span class="chip">${s.tag}</span>
+            <span class="chip done-chip st-done" style="display:none">✔ 已完成</span>
+          </div>
+          <p class="summary">${s.summary}</p>
+          <div class="kw-row">${s.kws.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+        </div>
+      </div>`).join('');
+  });
+}
+renderRoutes();
+
+/* ================= progress ================= */
+function updateProgress(){
+  const total=flatStations.length;
+  const done=flatStations.filter(s=>doneSet.has(s.id)).length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('ringPct').textContent=pct+'%';
+  const circ=2*Math.PI*40;
+  document.getElementById('ringFg').style.strokeDashoffset=circ*(1-done/total);
+  ROUTES.forEach(route=>{
+    const rTotal=route.stations.length;
+    const rDone=route.stations.filter(s=>doneSet.has(s.id)).length;
+    const cap=route.id==='letters'?'pctLetters':'pctAutobio';
+    const bar=route.id==='letters'?'barLetters':'barAutobio';
+    document.getElementById(cap).textContent=rDone+'/'+rTotal;
+    document.getElementById(bar).style.width=(rDone/rTotal*100)+'%';
+  });
+  flatStations.forEach(s=>{
+    const el=document.querySelector('.station[data-sid="'+s.id+'"]');
+    if(!el)return;
+    const isDone=doneSet.has(s.id);
+    el.classList.toggle('done',isDone);
+    const node=el.querySelector('.node');
+    node.textContent=isDone?'✔':s.num;
+    el.querySelector('.st-done').style.display=isDone?'inline-block':'none';
+  });
+}
+function saveProgress(){localStorage.setItem(LS_KEY,JSON.stringify([...doneSet]));}
+
+/* ================= modal ================= */
+const overlay=document.getElementById('modalOverlay');
+function routeOf(s){return ROUTES.find(r=>r.id===s.route);}
+function openStation(s){
+  currentStation=s;
+  const r=routeOf(s);
+  const accent=r.id==='letters'?'#17695f':'#c2452d';
+  document.getElementById('mKicker').textContent=r.label+'・第 '+s.num+' 站';
+  document.getElementById('mKicker').style.color=accent;
+  document.getElementById('mTitle').textContent=s.title;
+  document.getElementById('mPoints').innerHTML=s.points.map(p=>`<div class="point"><span class="p-ico">✦</span><span>${p}</span></div>`).join('');
+  document.getElementById('mKw').innerHTML=s.kws.map(k=>`<span class="kw">${k}</span>`).join('');
+  document.getElementById('mTip').innerHTML=s.tip;
+  document.getElementById('mLink').href=r.url;
+  const btnMark=document.getElementById('btnMark');
+  const isDone=doneSet.has(s.id);
+  btnMark.textContent=isDone?'↩ 取消完成標記':'✅ 標記為已完成';
+  btnMark.classList.toggle('is-done',isDone);
+  const gi=flatStations.indexOf(s);
+  document.getElementById('btnPrev').disabled=gi<=0;
+  document.getElementById('btnNext').disabled=gi>=flatStations.length-1;
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';}
+document.getElementById('btnModalClose').addEventListener('click',closeModal);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if(overlay.classList.contains('open')&&currentStation){
+    const gi=flatStations.indexOf(currentStation);
+    if(e.key==='ArrowRight'&&gi<flatStations.length-1)openStation(flatStations[gi+1]);
+    if(e.key==='ArrowLeft'&&gi>0)openStation(flatStations[gi-1]);
+  }
+});
+document.getElementById('btnPrev').addEventListener('click',()=>{
+  const gi=flatStations.indexOf(currentStation);if(gi>0)openStation(flatStations[gi-1]);});
+document.getElementById('btnNext').addEventListener('click',()=>{
+  const gi=flatStations.indexOf(currentStation);if(gi<flatStations.length-1)openStation(flatStations[gi+1]);});
+document.getElementById('btnMark').addEventListener('click',()=>{
+  if(!currentStation)return;
+  if(doneSet.has(currentStation.id)){
+    doneSet.delete(currentStation.id);
+    showToast('已取消「'+currentStation.title+'」的完成標記');
+  }else{
+    doneSet.add(currentStation.id);
+    showToast('🎉 完成學習站：'+currentStation.title);
+    const allDone=flatStations.every(s=>doneSet.has(s.id));
+    if(allDone)setTimeout(()=>showToast('🏆 恭喜！你已走完應用文學習地圖全部 12 站！'),2400);
+  }
+  saveProgress();updateProgress();openStation(currentStation);
+});
+
+/* card clicks */
+document.querySelectorAll('.card').forEach(card=>{
+  const handler=()=>{
+    const s=flatStations.find(x=>x.id===card.dataset.sid);
+    if(s)openStation(s);
+  };
+  card.addEventListener('click',handler);
+  card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handler();}});
+});
+
+/* ================= quiz ================= */
+let activeQuiz='letters';
+let quizAnswered={letters:[],autobio:[]};
+function renderQuiz(){
+  const qs=QUIZZES[activeQuiz];
+  const answered=quizAnswered[activeQuiz];
+  const list=document.getElementById('qList');
+  list.innerHTML=qs.map((item,qi)=>`
+    <div class="q-item" data-qi="${qi}">
+      <h4><span class="qnum">Q${qi+1}.</span><span>${item.q}</span></h4>
+      <div class="q-opts">
+        ${item.opts.map((op,oi)=>`<button class="q-opt" data-qi="${qi}" data-oi="${oi}">${String.fromCharCode(65+oi)}．${op}</button>`).join('')}
+      </div>
+      <div class="q-exp" id="exp-${qi}">${item.exp}</div>
+    </div>`).join('');
+  const answeredCount=answered.length;
+  document.getElementById('qProgress').textContent='目前作答 '+answeredCount+' / '+qs.length+' 題';
+  const result=document.getElementById('qResult');
+  if(answeredCount===qs.length){
+    const correct=answered.filter(a=>a.correct).length;
+    document.getElementById('qScore').textContent=correct+' / '+qs.length;
+    const msgs=correct===qs.length?'🏆 满分！你已精通這條路線，前往原站實作吧！':
+               correct>=3?'👍 不錯！複習錯題的解析，再到原站補強細節。':
+               '📖 別灰心！點擊上方學習站複習重點，再來挑戰一次。';
+    document.getElementById('qScoreMsg').textContent=msgs;
+    result.classList.add('show');
+    if(correct===qs.length)showToast('🏆 測驗滿分！太厲害了！');
+  }else{result.classList.remove('show');}
+}
+document.getElementById('qList').addEventListener('click',e=>{
+  const btn=e.target.closest('.q-opt');if(!btn)return;
+  const qi=+btn.dataset.qi, oi=+btn.dataset.oi;
+  if(quizAnswered[activeQuiz].some(a=>a.qi===qi))return;
+  const item=QUIZZES[activeQuiz][qi];
+  const correct=oi===item.ans;
+  quizAnswered[activeQuiz].push({qi,correct});
+  const wrap=btn.closest('.q-item');
+  wrap.querySelectorAll('.q-opt').forEach((b,idx)=>{
+    b.disabled=true;
+    if(idx===item.ans)b.classList.add('correct');
+    else if(idx===oi&&!correct)b.classList.add('wrong');
+  });
+  document.getElementById('exp-'+qi).classList.add('show');
+  renderQuizProgressOnly();
+  const answeredCount=quizAnswered[activeQuiz].length;
+  document.getElementById('qProgress').textContent='目前作答 '+answeredCount+' / '+QUIZZES[activeQuiz].length+' 題';
+  if(answeredCount===QUIZZES[activeQuiz].length)renderQuiz();
+});
+function renderQuizProgressOnly(){}
+document.getElementById('btnQuizRetry').addEventListener('click',()=>{
+  quizAnswered[activeQuiz]=[];renderQuiz();
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+});
+document.querySelectorAll('.qtab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.qtab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    activeQuiz=tab.dataset.route;
+    renderQuiz();
+  });
+});
+renderQuiz();
+
+/* ================= reset ================= */
+document.getElementById('btnReset').addEventListener('click',()=>{
+  if(confirm('確定要清除所有學習進度嗎？此操作無法復原。')){
+    doneSet.clear();saveProgress();updateProgress();
+    quizAnswered={letters:[],autobio:[]};renderQuiz();
+    showToast('🗑 已重設學習進度，重新出發吧！');
+  }
+});
+
+/* ================= toast ================= */
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ================= scroll bar & reveal ================= */
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+  document.getElementById('scrollBar').style.width=pct+'%';
+},{passive:true});
+
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');io.unobserve(en.target);}});
+},{threshold:.15});
+document.querySelectorAll('.station').forEach(el=>io.observe(el));
+
+updateProgress();
+</script>
+</body>
+</html>
